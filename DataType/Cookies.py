@@ -8,8 +8,11 @@ class Cookies(object):
         self.minExpires = float('inf')
 
     def isValid(self):
+        if self.minExpires == float('inf'):
+            return False
+
         cstamp = time.time()
-        if self.minExpires - cstamp >= 600:
+        if abs(self.minExpires - cstamp) >= 600:
             return True
         else:
             return False
