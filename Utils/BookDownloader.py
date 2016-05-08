@@ -1,5 +1,6 @@
 import requests
-from Utils import LoginHelper,DataBaseHelper
+from Utils import LoginHelper, DataBaseHelper
+import urllib
 
 down_header = LoginHelper.login_headers.copy()
 down_header['Host'] = 'down.mlook.mobi'
@@ -28,13 +29,15 @@ class BookDownloader(object):
 
         r = requests.get(url=down_url, headers=down_header, cookies=cookies.toDict())
 
-        f = open(self.parseBookeName(down_url), 'wb')
+        bookName = self.parseBookeName(down_url)
+        bookName = urllib.parse.unquote(bookName)
+        f = open(bookName, 'wb')
         f.write(r.content)
         f.close()
         dbhelper.close()
 
     def parseBookeName(self, url):
-        namepart = url.split('/')[5]
+        namepart = url.split('/')[-1]
         return namepart.split('?')[0]
 
 

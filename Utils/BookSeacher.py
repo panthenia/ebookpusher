@@ -1,5 +1,5 @@
 import requests
-from Utils import LoginHelper
+from Utils import LoginHelper, BookDownloader
 from Utils.DataBaseHelper import DbHelper
 from bs4 import BeautifulSoup
 from DataType.BookTypes import *
@@ -69,7 +69,30 @@ def getBookDetail(link):
     return parseBookDetail(r.text)
 
 def parseBookDetail(html):
-    pass
+    result = []
+    soup = BeautifulSoup(html, 'html5lib')
+    ts = soup.find('div', attrs={'class': 'fl metainfo'}).stripped_strings
+
+    meta = [x for x in ts]
+    di = meta.index('添加于:')
+    del meta[di]
+    del meta[di+1]
+
+    ts = soup.find('div', attrs={'class': 'intro'}).stripped_strings
+    des = [x for x in ts]
+
+
+    downlink = []
+    booksdivs = soup.find('div', attrs={'class': 'ebooks'}).find_all('div', attrs={'class': 'ebook clearfix'})
+    for book in booksdivs:
+        a = book.find('a', attrs={'class': 'download'})
+        link = 'https://www.mlook.mobi'+a['href']
+        type = a['original-title']
+        downlink.append((link, type,))
+
+    detail = BookDetail(meta, des, downlink)
+    return detail
+
 
 # 判断一个字符是否汉字字母或数字
 def isSignificantWord(w):
@@ -82,8 +105,16 @@ def significantStr(s):
     ns = ''
     for w in s:
         if isSignificantWord(w):
-            ns+=w
+            ns += w
     return ns
-books = seachBook('时间简史')
+books = seachBook('围城')
+bdetails = []
 for book in books:
     print(book)
+    dtl = getBookDetail(book.url)
+    print(dtl)
+    bdetails.append(dtl)
+abooklink = bdetails[0].downInfo[0][0]
+print(abooklink)
+downloader = BookDownloader.BookDownloader(abooklink)
+downloader.downloadBook()

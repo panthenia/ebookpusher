@@ -1,15 +1,19 @@
 from bs4 import BeautifulSoup
 import re
-soup = BeautifulSoup('''<h3>
-            <a href="/book/info/1442">嘟嘟<span class="red">时间简史</span>hah</a>
-                        <span class="fs12"> : 插图本</span>
-                                    <a class="comments" href="/book/info/1442#comments2">2</a>
-                      </h3>''', 'html5lib')
-a = ':作者：史蒂芬.霍金 上传于'
+soup = BeautifulSoup('''<div class="fl metainfo">
+                <span class="gray">作者: </span> 史蒂芬・霍金<br>
+        <span class="gray">添加于: </span><abbr class="timeago" title="2012-03-31 21:19:31">2012-03-31 21:19:31</abbr><br>
 
-for x in a:
-    if x >='\u4E00' and x <= '\u9FA5':
-        print(x+'yes\n')
-    else:
-        print(x+'no\n')
+                <span class="gray">参考网站: </span><a href="http://book.douban.com/subject_search?search_text=9787535715791" target="_blank">豆瓣</a><br>
+                <!-- <span class="gray">下载: </span>309次<br>
 
+        <span class="gray">推送: </span>66次<br> -->
+        <!--
+        <span class="gray">查看: </span>0次<br>
+        -->
+                        <span class="gray">ISBN: </span>9787535715791<br>
+                      </div>''', 'html5lib')
+
+s = soup.find('div').stripped_strings
+ss = [x for x in s]
+print(ss)
