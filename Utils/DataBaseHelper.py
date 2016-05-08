@@ -39,13 +39,17 @@ class DbHelper(object):
         self.con.commit()
         return cookies
 
-    def saveUser(self):
+    def saveUser(self, act, psw):
+        cursor = self.con.cursor()
+        cursor.execute('insert into user VALUES (?,?)', (act, psw,))
+        self.con.commit()
+        cursor.close()
         pass
 
     def getUser(self):
         cursor = self.con.cursor()
         cursor.execute('select * from user')
-        user = cursor.fetchall()
+        result = cursor.fetchall()
         cursor.close()
         self.con.commit()
-        return user[0]
+        return result[0]

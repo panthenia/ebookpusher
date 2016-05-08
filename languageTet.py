@@ -1,5 +1,5 @@
 from bs4 import BeautifulSoup
-import re
+import os
 soup = BeautifulSoup('''<div class="fl metainfo">
                 <span class="gray">作者: </span> 史蒂芬・霍金<br>
         <span class="gray">添加于: </span><abbr class="timeago" title="2012-03-31 21:19:31">2012-03-31 21:19:31</abbr><br>
@@ -14,6 +14,5 @@ soup = BeautifulSoup('''<div class="fl metainfo">
                         <span class="gray">ISBN: </span>9787535715791<br>
                       </div>''', 'html5lib')
 
-s = soup.find('div').stripped_strings
-ss = [x for x in s]
-print(ss)
+
+os.path.isdir
