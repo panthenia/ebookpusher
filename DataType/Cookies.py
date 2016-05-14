@@ -5,26 +5,18 @@ class Cookies(object):
 
     def __init__(self):
         self.cookieValues = {}
-        self.minExpires = float('inf')
+        self.minExpires = time.time()
 
     def isValid(self):
-        if self.minExpires == float('inf'):
-            return False
 
         cstamp = time.time()
-        if abs(self.minExpires - cstamp) >= 600:
-            return True
-        else:
+        if abs(self.minExpires - cstamp) > 86400:
             return False
+        else:
+            return True
 
-    def addCookie(self, name, value, expires):
+    def addCookie(self, name, value):
         self.cookieValues[name] = value
-        try:
-            ex = float(expires)
-        except Exception:
-            ex = float('inf')
-        if ex < self.minExpires:
-            self.minExpires = ex
 
     def toDict(self):
         return self.cookieValues
