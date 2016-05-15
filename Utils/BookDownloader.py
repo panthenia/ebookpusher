@@ -166,8 +166,9 @@ class BookDownloader(object):
         bdivs = soup.find_all('div', attrs={'class': 'book clearfix'})
         for div in bdivs:
 
-            # img地址需要处理 把后缀的——66——88去掉得到大图
+            # img地址处理:把后缀的——66——88去掉得到大图
             img = div.find('img', src=re.compile('^https://www.mlook.mobi/img/'))['src']
+            img = self.handle_image_url(img)
 
             name, url = self.parseNameAndUrl(div)
             ori_arthur = next(div.find('div', attrs={'class': 'fl meta'}) \
@@ -177,6 +178,13 @@ class BookDownloader(object):
             result.append(abk)
         return result
 
+    def handle_image_url(self, url):
+        rurl = url[::-1]
+        spl = rurl.split('_', maxsplit=2)
+        qt = spl[0].split('.')[0] + '.' + spl[2]
+        result = qt[::-1]
+        return result
+
     def getBookDetail(self, summary: BookSummary) -> BookDetail:
         """
         用于访问书籍地址,获取书籍的具体信息
@@ -184,7 +192,8 @@ class BookDownloader(object):
         :return: 返回一个BookDetail对象,参见parseBookDetail
         """
         self.checkCookies()
-        r = requests.get(url=summary.url,
+        url = 'https://www.mlook.mobi/book/info/'+summary.bookid
+        r = requests.get(url=url,
                          headers=login_headers, cookies=self.cookies.toDict())
         return self.parseBookDetail(r.text)
 

@@ -2,7 +2,7 @@ import json
 
 
 class BookSummary(object):
-    def __init__(self, name:str, id:str, img:str=None, arthur:str=None):
+    def __init__(self, name: str, id: str, img: str=None, arthur: str=None):
         self.name = name
         """:type : str"""
 

@@ -11,7 +11,7 @@ DBFILE_NAME = os.path.join(os.path.join(os.path.dirname(__file__), '..'), 'ebook
 class DbHelper(object):
     def __init__(self):
         self.con = sqlite3.connect(DBFILE_NAME)
-        print(DBFILE_NAME)
+        # print(DBFILE_NAME)
         cursor = self.con.cursor()
         cursor.execute(CREATE_COOKIES_TABLE)
         cursor.execute(CREATE_USER_TABLE)
