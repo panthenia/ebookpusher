@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="DataSourceManagerImpl" format="xml" hash="2366000172">
+  <component name="DataSourceManagerImpl" format="xml" hash="1831527298">
     <data-source source="LOCAL" name="Sqlite (Xerial) - ebookpush.db" uuid="19083478-49ab-4a46-9ab9-4c88019b3d01">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:$PROJECT_DIR$/ebookpush.db</jdbc-url>
+    </data-source>
+    <data-source source="LOCAL" name="Sqlite (Xerial) - ebookpush.db [2]" uuid="9687ea07-d8ac-4084-8974-0f01eada937e">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>

@@ -63,7 +63,10 @@ class DbHelper(object):
         result = cursor.fetchall()
         cursor.close()
         self.con.commit()
-        return result[0]
+        if result:
+            return result[0]
+        else:
+            return None
 
     def getPushEmailAccount(self):
         cursor = self.con.cursor()

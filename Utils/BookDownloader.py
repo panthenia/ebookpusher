@@ -43,7 +43,8 @@ class BookDownloader(object):
     def updateCookies(self):
         with DbHelper() as dbhelper:
             user = dbhelper.getUser()
-            self.cookies = self.login(user)
+            if user is not None:
+                self.cookies = self.login(user)
 
     def downloadBook(self, booklink, folder=None) -> None:
         """

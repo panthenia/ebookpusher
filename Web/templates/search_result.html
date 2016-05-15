@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索结果</title>
+    <link type="text/css" href="../static/js">
+</head>
+<body>
+    {% if sumaris %}
+        {% for sumary in sumaris %}
+            <ul>
+                <li>作者：{{  sumary.arthur }}</li>
+                <li>书名：{{  sumary.name}}</li>
+                <li><img src="{{ sumary.img }}"></li>
+            </ul>
+        {% endfor %}
+    {% else %}
+        <p>找不到和您的查询 "{{ query }}" 相符的内容或信息</p>
+    {% endif %}
+</body>
+</html>
