@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ detail.meta['书名'] }}</title>
+</head>
+<body>
+    <div>
+        {% for key in detail.meta.keys() %}
+            <p>{{ key }}:{{ detail.meta[key] }}</p>
+        {% endfor %}
+    </div>
+    </br>
+    <div>
+        {% for des in detail.des %}
+            <p>{{ des }}</p>
+        {% endfor %}
+    </div>
+    </br>
+    <div>
+        <ul>
+            {% for down in detail.downInfo %}
+                <li>{{ down['type'] }}:{{ down['link'] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

@@ -24,9 +24,9 @@ class BookSummary(object):
 
 
 class BookDetail(object):
-    def __init__(self, mt: [str], des: [str], down: [dict]):
+    def __init__(self, mt: dict, des: [str], down: [dict]):
         self.meta = mt
-        """:type : [str]"""
+        """:type : dict"""
 
         self.des = des
         """:type : [str]"""

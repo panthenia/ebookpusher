@@ -205,12 +205,27 @@ class BookDownloader(object):
         :return: 返回一个BookDetail对象
         """
         soup = BeautifulSoup(html, 'html5lib')
-        ts = soup.find('div', attrs={'class': 'fl metainfo'}).stripped_strings
-
-        meta = [x for x in ts]
-        di = meta.index('添加于:')
-        del meta[di]
-        del meta[di + 1]
+        # ts = soup.find('div', attrs={'class': 'fl metainfo'}).stripped_strings
+        #
+        # meta = [x for x in ts]
+        # di = meta.index('添加于:')
+        # del meta[di]
+        # del meta[di + 1]
+        metas = {}
+        mdiv = soup.find('div', attrs={'class': 'fl metainfo'})
+        metas['书名'] = mdiv.parent.parent.find('h1').string
+        spans = mdiv.find_all('span', attrs={'class': 'gray'})
+        for x in spans:
+            if x.string:
+                us = str(x.string.encode('utf-8'), 'utf-8')
+                if not '添加于' in us:
+                    if '参考网站' in us:
+                        if '暂无' in us:
+                            metas['参考网站'] = '暂无'
+                        else:
+                            metas[x.next_sibling.string] = x.next_sibling['href']
+                    else:
+                        metas[us[0:len(us)-2]] = x.next_sibling
 
         ts = soup.find('div', attrs={'class': 'intro'}).stripped_strings
         des = [x for x in ts]
@@ -224,7 +239,7 @@ class BookDownloader(object):
             ltdict['type'] = a['original-title']
             downlink.append(ltdict)
 
-        detail = BookDetail(meta, des, downlink)
+        detail = BookDetail(metas, des, downlink)
         return detail
 
     def isSignificantWord(self, w) -> bool:
