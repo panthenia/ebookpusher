@@ -125,17 +125,18 @@ class BookDownloader(object):
             dbhelper.saveCookies(cookies)
         return cookies
 
-    def seachBook(self, bookname) -> [BookSummary]:
+    def seachBook(self, bookname, page) -> ([BookSummary],int,):
         """
         搜索书籍
         :param bookname:书名
+        :param page:页码
         :return: 见parseSeachResult
         """
         self.checkCookies()
 
-        r = self.session.get(url=seach_url, params={'q': bookname},
+        r = self.session.get(url=seach_url, params={'q': bookname, 'page': page},
                              headers=login_headers, cookies=self.cookies.toDict())
-        return self.parseSeachResult(r.text)
+        return self.parseSeachResult(r.text, page)
 
     def parseNameAndUrl(self, div) -> (str, str,):
         """
@@ -156,7 +157,20 @@ class BookDownloader(object):
         url = 'https://www.mlook.mobi' + h3.a['href']
         return namept, url
 
-    def parseSeachResult(self, html: str) -> [BookSummary]:
+    def getSearchResultPages(self, soup):
+        """
+        用于获取搜索结果的页面编号，判断是否有分页
+        :param soup:
+        :return:
+        """
+        pagediv = soup.find('div', attrs={'id': "pager"})
+        if pagediv:
+            pi = pagediv.find('input')
+            return int(pi['max'])
+        else:
+            return 1
+
+    def parseSeachResult(self, html: str, page) -> ([BookSummary],int,):
         """
         用于解析搜索结果的HTML
         :param html: 搜索得到的HTML
@@ -165,8 +179,9 @@ class BookDownloader(object):
         result = []
         soup = BeautifulSoup(html, 'html5lib')
         bdivs = soup.find_all('div', attrs={'class': 'book clearfix'})
-        for div in bdivs:
 
+        total_page = self.getSearchResultPages(soup)
+        for div in bdivs:
             # img地址处理:把后缀的——66——88去掉得到大图
             img = div.find('img', src=re.compile('^https://www.mlook.mobi/img/'))['src']
             img = self.handle_image_url(img)
@@ -177,7 +192,7 @@ class BookDownloader(object):
             arthur = ori_arthur[0: ori_arthur.find('上传于')]
             abk = BookSummary(name=name, id=url.split('/')[-1], img=img, arthur=arthur)
             result.append(abk)
-        return result
+        return result, total_page
 
     def handle_image_url(self, url):
         rurl = url[::-1]

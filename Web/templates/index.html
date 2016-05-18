@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索书籍</title>
+    <link rel="stylesheet" href="../static/css/responsive-full-background-image.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+</head>
+<body>
+<div class="container" style="margin-top: 20%">
+    <div class="input-group" style="margin: 0 auto 0;width: 60%">
+        <input id="book-input" type="text" class="form-control" placeholder="输入书名">
+      <span class="input-group-btn">
+        <button id="seach-button" class="btn btn-success" type="button">Go</button>
+      </span>
+    </div><!-- /input-group -->
+</div>
+</body>
+<script src="../static/js/jquery-2.2.3.js"></script>
+<script>
+    $(document).ready(function () {
+        $(document).keydown(function (event) {
+            if (event.keyCode == 13) {
+                $('#seach-button').click();
+            }
+        });
+        $('#seach-button').click(function () {
+            var search_input = $('#book-input').val();
+            console.log(search_input);
+            window.location.href = '/search?q='+search_input;
+        });
+    });
+</script>
+</html>

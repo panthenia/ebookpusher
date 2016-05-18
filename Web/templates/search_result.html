@@ -1,21 +1,104 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <title>搜索结果</title>
     <link type="text/css" href="../static/js">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../static/css/responsive-full-background-image.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+    <style>
+        .image{
+            max-width: 300px;
+            max-height: 300px;
+            cursor: pointer;
+        }
+        .grid{
+            width: 65%;
+            margin: 0 auto 0;
+        }
+        .grid-item{
+            margin-top: 15px;
+            margin-left: 20px;
+        }
+        #pre-page{
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            left: 10px;
+            top: 50%;
+        }
+        #next-page{
+            width: 80px;
+            height: 80px;
+            position: absolute;
+            right: 10px;
+            top:50%;
+        }
+        #pre-page img, #next-page img{
+            width: inherit;
+            height: inherit;
+            cursor: pointer;
+
+        }
+    </style>
 </head>
 <body>
-    {% if sumaris %}
-        {% for sumary in sumaris %}
-            <ul>
-                <li>作者：{{  sumary.arthur }}</li>
-                <li>书名：{{  sumary.name}}</li>
-                <li><img src="{{ sumary.img }}"></li>
-            </ul>
-        {% endfor %}
-    {% else %}
-        <p>找不到和您的查询 "{{ query }}" 相符的内容或信息</p>
-    {% endif %}
+{% if total_page|int > 1 and page|int > 1 %}
+<div id="pre-page">
+    <img src="/static/img/back.png">
+</div>
+{% endif %}
+{% if total_page|int > 1 and page|int != total_page|int %}
+<div id="next-page">
+    <img src="/static/img/next.png">
+</div>
+{% endif %}
+<div class="grid">
+{% if sumaris %}
+    {% for sumary in sumaris %}
+        <div class="grid-item" arthur="{{ sumary.arthur }}" bkname="{{ sumary.name }}" bkid="{{ sumary.bookid }}">
+        <img src="{{ sumary.img }}" class="image">
+        </div>
+    {% endfor %}
+{% else %}
+    <p>找不到和您的查询 "{{ query }}" 相符的内容或信息</p>
+{% endif %}
+</div>
 </body>
+<script src="../static/js/jquery-2.2.3.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+<script src="../static/js/masonry.pkgd.min.js"></script>
+<script src="../static/js/imagesloaded.pkgd.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#pre-page').click(function () {
+            window.location.href = '/search?q='+'{{ query }}'+'&page='+'{{ page|int - 1 }}';
+        });
+        $('#next-page').click(function () {
+            window.location.href = '/search?q='+'{{ query }}'+'&page='+'{{ page|int + 1 }}';
+        });
+        $('.grid').imagesLoaded(function () {
+            $('.grid').masonry({
+            // options
+            itemSelector: '.grid-item',
+            columnWidth: 300
+        });
+        });
+        $('.grid-item').hover(function () {
+            var arthur = $(this).attr('arthur');
+            var bkname = $(this).attr('bkname');
+            $(this).popover({title:'书籍信息',container:'body'}).popover('show');
+            $('.popover-content').html('<ul class="list-group">'+'<li class="list-group-item">' +
+                    $(this).attr('bkname')+'</li>' + '<li class="list-group-item">'+
+                    $(this).attr('arthur')+'</li></ul>');
+        },function () {
+            $(this).popover('hide');
+        }).click(function () {
+            var bkid = $(this).attr('bkid');
+            window.location.href='/detail?bookid='+bkid;
+        });
+    });
+
+</script>
 </html>
