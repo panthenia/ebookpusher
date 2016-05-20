@@ -4,33 +4,88 @@
     <meta charset="UTF-8">
     <title>{{ detail.meta['书名'] }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../static/css/responsive-full-background-image.css">
     <link rel="stylesheet" href="../static/css/bootstrap.css">
-    <script src="../static/js/jquery-2.2.3.js"></script>
-    <script src="../static/js/bootstrap.js"></script>
     <style>
-
+        .wrapper {
+            margin: 10px auto 0;
+            width: 60%;
+        }
     </style>
 </head>
 <body>
-    <div>
-        {% for key in detail.meta.keys() %}
-            <p>{{ key }}:{{ detail.meta[key] }}</p>
-        {% endfor %}
-    </div>
-    </br>
-    <div>
-        {% for des in detail.des %}
-            <p>{{ des }}</p>
-        {% endfor %}
-    </div>
-    </br>
-    <div>
-        <ul>
-            {% for down in detail.downInfo %}
-                <li>{{ down['type'] }}:{{ down['link'] }}</li>
-            {% endfor %}
-        </ul>
-    </div>
-</body>
+<div class="wrapper">
+    <div class="panel panel-default">
+        <div class="panel-heading">书籍信息</div>
+        <div class="panel-body">
 
+            {% for key in detail.meta.keys() %}
+                {% if key == '豆瓣' %}
+                    <p>
+                        <a href="{{ detail.meta[key] }}" target="_blank" class="label label-success">豆瓣链接</a>
+                    </p>
+                {% else %}
+                    <p>{{ key }}:{{ detail.meta[key] }}</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">书籍简介</div>
+        <div class="panel-body">
+            {% for des in detail.des %}
+                <p>{{ des }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">下载信息</div>
+        <div class="panel-body">
+            <ul class="list-group">
+                {% for down in detail.downInfo %}
+                    <li class="list-group-item">
+                            <p class="show-book" style="cursor: pointer" link="{{ down['link'] }}">{{ down['type']}}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+    </div>
+
+</div>
+<div class="modal fade" id="push-ok-model">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p> <span class="text-danger">{{ detail.meta['书名'] }}</span> 已成功加入推送队列,即将推送至邮箱!</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success" data-dismiss="modal">确定</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+</body>
+<script src="../static/js/jquery-2.2.3.js"></script>
+<script src="../static/js/bootstrap.js"></script>
+<script>
+    $(document).ready(function () {
+
+        $('.show-book').click(function () {
+            var link = $(this).attr('link');
+            var url = '/push';
+            $('#push-ok-model').modal();
+            $('#push-ok-model').modal({ keyboard: true });
+{#            $('#').modal('show');#}
+            $.post({
+                url:url,
+                data:{
+                    url:link
+                }
+            });
+        });
+    });
+
+</script>
 </html>

@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from DataType.BookTypes import *
 from DataType.Cookies import Cookies
 import re
+import os.path
 
 login_url = 'https://www.mlook.mobi/member/login'
 login_headers = {'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -51,7 +52,7 @@ class BookDownloader(object):
         用于下载一本书
         :param booklink: 书籍的地址
         :param folder: 下载的目的路径
-        :return: None
+        :return: 书籍的绝对位置
         """
         self.checkCookies()
 
@@ -86,7 +87,7 @@ class BookDownloader(object):
                 if chunk:
                     f.write(chunk)
                     print('%s bytes received' % len(chunk))
-
+        return os.path.abspath(bookName)
     def parseBookeName(self, url) -> str:
         """
         从书籍地址中解析书籍名字

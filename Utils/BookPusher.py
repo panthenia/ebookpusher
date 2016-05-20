@@ -10,8 +10,8 @@ import os
 
 class BookPusher(object):
     def __init__(self):
-        dbhelper = DbHelper()
-        self.act, self.psw = dbhelper.getPushEmailAccount()
+        with DbHelper() as dbhelper:
+            self.act, self.psw = dbhelper.getPushEmailAccount()
 
     def push_book(self, path):
         mail = MIMEMultipart()
