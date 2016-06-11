@@ -1,10 +1,12 @@
 import sys, os
-print(sys.path)
+
 sys.path.append(os.path.split(sys.path[0])[0])
-from flask import Flask, url_for, request, render_template
+from flask import Flask, url_for, request, render_template, redirect, session
 from Utils import BookDownloader, BookPusher
 from DataType.BookTypes import BookSummary
 import json
+
+
 app = Flask(__name__)
 downloader = BookDownloader.BookDownloader()
 pusher = BookPusher.BookPusher()
@@ -28,19 +30,44 @@ def push_book():
     return 'suucess'
 
 
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('login.html')
+    elif request.method =='POST':
+        user = request.form['act']
+        psw = request.form['psd']
+        if True:
+            session['account'] = user
+            app.logger.debug('%s,%s' % (user, psw,))
+            return redirect('/')
+        else:
+            return
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    if 'account' in session:
+        session.pop('account', None)
+
 @app.route('/detail', methods=['GET'])
 def get_book_detail():
-    bookid = request.args.get('bookid', None)
+    if 'account' in session:
+        bookid = request.args.get('bookid', None)
 
-    if bookid:
-        sumary = BookSummary(name='', id=bookid)
-        detail = downloader.getBookDetail(summary=sumary)
-        return render_template('book_detail.html', detail=detail)
-
+        if bookid:
+            sumary = BookSummary(name='', id=bookid)
+            detail = downloader.getBookDetail(summary=sumary)
+            return render_template('book_detail.html', detail=detail)
+    else:
+        return redirect('/login')
 
 @app.route('/')
 def search_index():
-    return render_template('index.html')
+    if 'account' in session:
+        return render_template('index.html')
+    else:
+        return redirect('/login')
+app.secret_key = os.urandom(24)
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(port=8888, debug=True)

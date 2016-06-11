@@ -229,7 +229,7 @@ class BookDownloader(object):
         # del meta[di + 1]
         metas = {}
         mdiv = soup.find('div', attrs={'class': 'fl metainfo'})
-        metas['书名'] = mdiv.parent.parent.find('h1').string
+        metas['name'] = mdiv.parent.parent.find('h1').string
         spans = mdiv.find_all('span', attrs={'class': 'gray'})
         for x in spans:
             if x.string:
@@ -237,11 +237,15 @@ class BookDownloader(object):
                 if not '添加于' in us:
                     if '参考网站' in us:
                         if '暂无' in us:
-                            metas['参考网站'] = '暂无'
+                            metas['douban_link'] = None
                         else:
-                            metas[x.next_sibling.string] = x.next_sibling['href']
-                    else:
-                        metas[us[0:len(us)-2]] = x.next_sibling
+                            metas['douban_link'] = x.next_sibling['href']
+                    elif 'ISBN' in us:
+                        metas['isbn'] = x.next_sibling
+                    elif '作者' in us:
+                        metas['arthur'] = x.next_sibling
+                    elif '豆瓣评分' in us:
+                        metas['douban_rate'] = x.next_sibling
 
         ts = soup.find('div', attrs={'class': 'intro'}).stripped_strings
         des = [x for x in ts]

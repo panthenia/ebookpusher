@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="../static/css/responsive-full-background-image.css">
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+    <style>
+        .wrapper {
+            margin: 20% auto 0;
+            width: 40%;
+
+        }
+        label{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <form class="form-horizontal" action="/login" method="POST">
+  <div class="form-group">
+    <label for="inputEmail3" class="col-sm-2 control-label">帐号</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" name="act" placeholder="输入帐号">
+    </div>
+  </div>
+  <div class="form-group">
+    <label for="inputPassword3" class="col-sm-2 control-label">密码</label>
+    <div class="col-sm-10">
+      <input type="password" class="form-control" name="psd" placeholder="输入密码">
+    </div>
+  </div>
+  <div class="form-group" style="text-align: center">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button type="submit" class="btn-lg btn-success">提交</button>
+    </div>
+  </div>
+</form>
+</div>
+</body>
+<script src="../static/js/jquery-2.2.3.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#sub').click(function () {
+            $.post({
+                url: '/login',
+                data: {
+                    act: $('#act').val(),
+                    psd: $('#psd').val()
+                }
+            });
+        });
+    });
+
+</script>
+</html>
